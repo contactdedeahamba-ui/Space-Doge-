@@ -5,26 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Retro Space Shooter</title>
 </head>
-<body class="bg-[#050505] text-white overflow-hidden select-none">
-    <div id="game-container" class="flex flex-col items-center justify-center min-h-screen p-4">
-        <div class="relative glass-panel rounded-sm overflow-hidden">
+<body class="select-none">
+    <div id="game-container" class="game-layout">
+        <div class="glass-panel">
             
             <!-- HUD Overlay -->
-            <div class="absolute top-0 left-0 w-full p-5 flex justify-between items-start z-20 pointer-events-none">
+            <div class="hud">
                 <div class="stat-box">
                     <div class="stat-label">Wave</div>
-                    <div id="waveSpan" class="stat-value text-[#ff33ff]">1</div>
+                    <div id="waveSpan" class="stat-value">1</div>
                 </div>
-                <div class="stat-box text-right">
+                
+                <div class="game-controls">
+                    <button id="pauseBtn" class="btn-control">PAUSE</button>
+                    <button id="manualRebootBtn" class="btn-control">REBOOT</button>
+                </div>
+
+                <div class="stat-box right">
                     <div class="stat-label">Score</div>
                     <div id="scoreSpan" class="stat-value">000000</div>
                 </div>
             </div>
 
+            <!-- Pause Overlay -->
+            <div id="pauseOverlay" class="overlay hidden bg-black/60">
+                <h1 class="text-glow">PAUSED</h1>
+                <p>Press ESC or click PLAY to resume</p>
+            </div>
+
             <!-- Game Over Overlay -->
-            <div id="restartBtn" class="hidden absolute inset-0 z-30 bg-black/85 flex flex-col items-center justify-center text-center p-8">
-                <h1 class="text-7xl font-black text-[#f00] m-0 mb-2 tracking-tighter">MISSION FAILED</h1>
-                <p class="text-xl text-[#888] font-mono mb-8 uppercase tracking-widest">System override initiated</p>
+            <div id="restartBtn" class="overlay hidden">
+                <h1>MISSION FAILED</h1>
+                <p>System override initiated</p>
                 <button class="btn-restart">
                     Reboot System
                 </button>
@@ -37,18 +49,17 @@
                 id="gameCanvas" 
                 width="600" 
                 height="800" 
-                class="max-w-full h-auto bg-black cursor-none block"
             ></canvas>
         </div>
 
         <!-- Controls Footer -->
-        <div class="mt-8 flex gap-12 text-[10px] text-[#666] uppercase tracking-[0.2em] font-bold">
-            <div class="flex items-center gap-3">
+        <div class="controls-footer">
+            <div class="control-item">
                 <kbd>Left / A</kbd>
                 <kbd>Right / D</kbd>
                 <span>Navigation</span>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="control-item">
                 <kbd>SPACE</kbd>
                 <span>Fire Cannons</span>
             </div>

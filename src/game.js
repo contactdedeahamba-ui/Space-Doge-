@@ -119,12 +119,15 @@ export class Particle {
   }
 }
 
-export async function initGame(canvasId, scoreId, restartBtnId, waveId) {
+export async function initGame(canvasId, scoreId, restartBtnId, waveId, pauseBtnId, pauseOverlayId, manualRebootBtnId) {
   const canvas = document.getElementById(canvasId);
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById(scoreId);
   const waveEl = document.getElementById(waveId);
   const restartBtn = document.getElementById(restartBtnId);
+  const pauseBtn = document.getElementById(pauseBtnId);
+  const pauseOverlay = document.getElementById(pauseOverlayId);
+  const manualRebootBtn = document.getElementById(manualRebootBtnId);
 
   // Set canvas size
   canvas.width = 600;
@@ -146,6 +149,7 @@ export async function initGame(canvasId, scoreId, restartBtnId, waveId) {
   let particles = [];
   let score = 0;
   let gameActive = true;
+  let isPaused = false;
   let keys = {};
   let wave = 1;
   let lastEnemySpawn = 0;
@@ -178,13 +182,33 @@ export async function initGame(canvasId, scoreId, restartBtnId, waveId) {
     scoreEl.innerText = '000000';
     waveEl.innerText = '1';
     gameActive = true;
+    isPaused = false;
     restartBtn.style.display = 'none';
+    pauseOverlay.classList.add('hidden');
     requestAnimationFrame(animate); 
   }
 
+  function togglePause() {
+    if (!gameActive) return;
+    isPaused = !isPaused;
+    if (isPaused) {
+      pauseOverlay.classList.remove('hidden');
+      pauseBtn.innerText = 'PLAY';
+    } else {
+      pauseOverlay.classList.add('hidden');
+      pauseBtn.innerText = 'PAUSE';
+      requestAnimationFrame(animate);
+    }
+  }
+
   window.addEventListener('keydown', (e) => {
+    if (e.key === 'p' || e.key === 'Escape') {
+      togglePause();
+      return;
+    }
+
     keys[e.key] = true;
-    if (e.key === ' ' && gameActive) {
+    if (e.key === ' ' && gameActive && !isPaused) {
       projectiles.push(new Projectile(
         player.x + player.width / 2,
         player.y,
@@ -201,6 +225,13 @@ export async function initGame(canvasId, scoreId, restartBtnId, waveId) {
 
   restartBtn.addEventListener('click', () => {
     if (!gameActive) reset();
+  });
+
+  pauseBtn.addEventListener('click', togglePause);
+  manualRebootBtn.addEventListener('click', () => {
+    if (confirm('REBOOT SYSTEM? ALL PROGRESS WILL BE LOST.')) {
+      reset();
+    }
   });
 
   function createExplosion(x, y, color) {
@@ -243,19 +274,7 @@ export async function initGame(canvasId, scoreId, restartBtnId, waveId) {
   }
 
   function animate(timestamp) {
-    if (!gameActive) {
-      // Draw Game Over overlay
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#ff3333';
-      ctx.font = 'bold 48px Inter';
-      ctx.textAlign = 'center';
-      ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 50);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '24px Inter';
-      ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2);
-      return;
-    }
+    if (!gameActive || isPaused) return;
 
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
