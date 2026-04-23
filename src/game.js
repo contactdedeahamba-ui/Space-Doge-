@@ -136,7 +136,7 @@ export async function initGame(canvasId, scoreId, restartBtnId, waveId, pauseBtn
   // Load config
   let config;
   try {
-    const response = await fetch('./data.json');
+    const response = await fetch('data.json');
     config = await response.json();
   } catch (error) {
     console.error('Failed to load data.json:', error);
