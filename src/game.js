@@ -130,8 +130,8 @@ export async function initGame(canvasId, scoreId, restartBtnId, waveId, pauseBtn
   const manualRebootBtn = document.getElementById(manualRebootBtnId);
 
   // Set canvas size
-  canvas.width = 600;
-  canvas.height = 800;
+  canvas.width = 360;
+  canvas.height = 600;
 
   // Load config
   let config;

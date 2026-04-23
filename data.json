@@ -1,20 +1,20 @@
 {
   "player": {
-    "speed": 7,
+    "speed": 6,
     "color": "#0f0",
-    "width": 50,
-    "height": 40
+    "width": 40,
+    "height": 30
   },
   "projectile": {
-    "velocity": 10,
+    "velocity": 9,
     "color": "#0ff",
-    "radius": 4
+    "radius": 3
   },
   "enemy": {
     "velocity": 2,
     "color": "#f00",
-    "width": 40,
-    "height": 40,
+    "width": 30,
+    "height": 30,
     "spawnRate": 1500,
     "waveCount": 5
   },
