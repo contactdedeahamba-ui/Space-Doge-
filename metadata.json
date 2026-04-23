@@ -1,0 +1,6 @@
+{
+  "name": "Retro Space Shooter",
+  "description": "A classic arcade-style space shooter built with Vanilla JS and HTML5 Canvas, featuring waves of enemies, score tracking, and smooth gameplay.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

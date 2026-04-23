@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: 'Courier New', Courier, monospace;
+}
+
+body {
+  @apply bg-[#050505] text-white;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* CRT Scanline Effect */
+.crt-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.25) 50%
+  ),
+  linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.06),
+    rgba(0, 255, 0, 0.02),
+    rgba(0, 0, 255, 0.06)
+  );
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.stat-box {
+  @apply bg-black/70 px-4 py-2 border-2 border-[#0f0] min-w-[120px];
+}
+
+.stat-label {
+  @apply text-[12px] text-[#0f0] uppercase mb-1 font-bold;
+}
+
+.stat-value {
+  @apply text-2xl font-black tracking-widest leading-none;
+}
+
+.btn-restart {
+  @apply bg-[#0f0] text-black border-none px-10 py-4 text-xl font-black cursor-pointer uppercase transition-all duration-200 hover:scale-105 active:scale-95;
+}
+
+.glass-panel {
+  @apply bg-black border-4 border-[#333] shadow-[0_0_40px_rgba(0,255,100,0.1)];
+}
