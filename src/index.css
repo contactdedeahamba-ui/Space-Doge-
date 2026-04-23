@@ -28,25 +28,33 @@ body {
   );
   background-size: 100% 4px, 3px 100%;
   pointer-events: none;
-  z-index: 10;
+  z-index: 25;
 }
 
 .stat-box {
-  @apply bg-black/70 px-4 py-2 border-2 border-[#0f0] min-w-[120px];
+  @apply bg-black/70 px-4 py-2 border-2 border-[#0f0] min-w-[140px] rounded-none;
 }
 
 .stat-label {
-  @apply text-[12px] text-[#0f0] uppercase mb-1 font-bold;
+  @apply text-[10px] text-[#0f0] uppercase mb-1 font-bold tracking-[0.2em];
 }
 
 .stat-value {
-  @apply text-2xl font-black tracking-widest leading-none;
+  @apply text-2xl font-black tracking-widest leading-none font-mono text-[#ffff00];
+}
+
+#waveSpan.stat-value {
+  @apply text-[#ff33ff];
 }
 
 .btn-restart {
-  @apply bg-[#0f0] text-black border-none px-10 py-4 text-xl font-black cursor-pointer uppercase transition-all duration-200 hover:scale-105 active:scale-95;
+  @apply bg-[#f00] hover:bg-white hover:text-black text-white border-none px-12 py-4 text-xl font-black cursor-pointer uppercase transition-all duration-200 transform hover:scale-105 active:scale-95;
 }
 
 .glass-panel {
-  @apply bg-black border-4 border-[#333] shadow-[0_0_40px_rgba(0,255,100,0.1)];
+  @apply bg-black border-4 border-[#333] shadow-[0_0_60px_rgba(0,255,100,0.15)];
+}
+
+kbd {
+  @apply inline-block px-2 py-1 font-mono text-[10px] text-gray-400 bg-[#1a1a1a] border border-[#333] rounded-sm;
 }
