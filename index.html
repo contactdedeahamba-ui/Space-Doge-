@@ -4,10 +4,161 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Retro Space Shooter</title>
-    <link rel="stylesheet" href="src/index.css">
+    
+    <!-- Fix 1: Add Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fix 2: Define 'Retro' CSS in a style block -->
+    <style>
+        :root {
+            --color-bg: #050505;
+            --color-green: #0f0;
+            --color-red: #f00;
+            --color-yellow: #ffff00;
+            --color-pink: #ff33ff;
+            --color-border: #333;
+            --font-arcade: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: #ffffff;
+            font-family: var(--font-arcade);
+        }
+
+        .glass-panel {
+            position: relative;
+            background-color: #000;
+            border: 4px solid var(--color-border);
+            box-shadow: 0 0 60px rgba(0, 255, 100, 0.15);
+            overflow: hidden;
+        }
+
+        .crt-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 25;
+        }
+
+        .hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            z-index: 20;
+            pointer-events: none; /* Pass through to canvas */
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            pointer-events: auto; /* Enable clicks for buttons */
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 16px;
+            border: 2px solid var(--color-green);
+            min-width: 140px;
+            pointer-events: auto;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--color-green);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--color-yellow);
+            line-height: 1;
+        }
+
+        #waveSpan.stat-value {
+            color: var(--color-pink);
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 32px;
+            z-index: 30;
+            background-color: rgba(0, 0, 0, 0.85);
+        }
+
+        .btn-restart, .btn-control {
+            font-family: var(--font-arcade);
+            text-transform: uppercase;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-restart {
+            background-color: var(--color-red);
+            color: #fff;
+            border: none;
+            padding: 16px 48px;
+            font-size: 20px;
+        }
+
+        .btn-restart:hover {
+            background-color: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        .btn-control {
+            background: #1a1a1a;
+            color: var(--color-green);
+            border: 1px solid var(--color-green);
+            padding: 4px 12px;
+            font-size: 10px;
+        }
+
+        .btn-control:hover {
+            background: var(--color-green);
+            color: #000;
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px var(--color-green);
+            color: var(--color-green);
+            font-size: 64px;
+        }
+
+        kbd {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: #1a1a1a;
+            border: 1px solid var(--color-border);
+            color: #aaa;
+            border-radius: 2px;
+            font-size: 10px;
+        }
+    </style>
 </head>
-<body class="select-none">
-    <div id="game-container" class="game-layout">
+<body class="bg-[#050505] text-white overflow-hidden select-none">
+    <div id="game-container" class="flex flex-col items-center justify-center min-h-screen p-4">
         <div class="glass-panel">
             
             <!-- HUD Overlay -->
@@ -22,22 +173,22 @@
                     <button id="manualRebootBtn" class="btn-control">REBOOT</button>
                 </div>
 
-                <div class="stat-box right">
+                <div class="stat-box text-right">
                     <div class="stat-label">Score</div>
                     <div id="scoreSpan" class="stat-value">000000</div>
                 </div>
             </div>
 
             <!-- Pause Overlay -->
-            <div id="pauseOverlay" class="overlay hidden bg-black/60">
+            <div id="pauseOverlay" class="overlay hidden">
                 <h1 class="text-glow">PAUSED</h1>
-                <p>Press ESC or click PLAY to resume</p>
+                <p class="mt-4 uppercase tracking-[0.2em]">Press ESC or click PLAY to resume</p>
             </div>
 
             <!-- Game Over Overlay -->
             <div id="restartBtn" class="overlay hidden">
-                <h1>MISSION FAILED</h1>
-                <p>System override initiated</p>
+                <h1 class="text-7xl font-black text-[#f00] m-0 mb-2 tracking-tighter">MISSION FAILED</h1>
+                <p class="text-xl text-[#888] font-mono mb-8 uppercase tracking-widest">System override initiated</p>
                 <button class="btn-restart">
                     Reboot System
                 </button>
@@ -49,25 +200,27 @@
             <canvas 
                 id="gameCanvas" 
                 width="600" 
-                height="800" 
+                height="800"
+                class="max-w-full h-auto bg-black block"
             ></canvas>
         </div>
 
         <!-- Controls Footer -->
-        <div class="controls-footer">
-            <div class="control-item">
+        <div class="mt-8 flex gap-12 text-[10px] text-[#666] uppercase font-bold tracking-widest">
+            <div class="flex items-center gap-3">
                 <kbd>Left / A</kbd>
                 <kbd>Right / D</kbd>
                 <span>Navigation</span>
             </div>
-            <div class="control-item">
+            <div class="flex items-center gap-3">
                 <kbd>SPACE</kbd>
                 <span>Fire Cannons</span>
             </div>
         </div>
     </div>
 
-    <script type="module" src="src/main.js"></script>
+    <!-- Fix 3: Correct Script Path with relative dot -->
+    <script type="module" src="./src/main.js"></script>
 </body>
 </html>
 
